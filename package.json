@@ -1,0 +1,19 @@
+{
+  "name": "testjohn",
+  "version": "1.0.0",
+  "description": "testing for it 122",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/facemanguy/IT122.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/facemanguy/IT122/issues"
+  },
+  "homepage": "https://github.com/facemanguy/IT122#readme"
+}
