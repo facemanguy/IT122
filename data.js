@@ -52,6 +52,6 @@ export const getAll = () => {
 
 export const getItem = (model) => {
     return cars.find((cars) =>{
-        return cars.model === model;
+        return cars.model.toLowerCase() === model.toLowerCase();
     });
 };

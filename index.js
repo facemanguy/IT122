@@ -5,7 +5,8 @@ import fs from "fs";
 http.createServer((req,res) => {
     let url = req.url.split("?");
     let query = parse(url[1]);
-    var path = req.url.toLowerCase();
+    var path = url[0].toLowerCase();
+    //console.log(query.model);
     switch(path) {
         case '/':
             fs.readFile("home.html", (err, data) => {
@@ -24,8 +25,14 @@ http.createServer((req,res) => {
             });
             break;
         case '/detail':
-            res.writeHead(200, {'Content-Type': 'text/html'});
-            res.end(JSON.stringify(vehicles.getItem(query)));
+            var carMod = query.model;
+            // console.log(carMod);
+            var carResult = vehicles.getItem(carMod);
+            // console.log(carResult);
+            var carResString = JSON.stringify(carResult);
+            // console.log(carResString);
+            res.writeHead(200, {'Content-Type': 'text/plain'});
+            res.end(carResString);
             break;
         default:
             res.writeHead(404, {'Content-Type': 'text/plain'});
