@@ -1,42 +1,41 @@
+'use strict'
+import express from 'express';
+import exphbs from 'express-handlebars';
 import * as vehicles from './data.js';
-import { parse } from "querystring";
-import http from "http";
-import fs from "fs";
-http.createServer((req,res) => {
-    let url = req.url.split("?");
-    let query = parse(url[1]);
-    var path = url[0].toLowerCase();
-    //console.log(query.model);
-    switch(path) {
-        case '/':
-            fs.readFile("home.html", (err, data) => {
-                if (err) return console.error(err);
-                // res.writeHead(200, {'Content-Type': 'text/html'});
-                // res.end(data.toString());
-                res.writeHead(200, {'Content-Type': 'text/plain'});
-                res.end(JSON.stringify(vehicles.getAll()));
-            });
-            break;
-        case '/about':
-            fs.readFile("about.html", (err, data) => {
-                if (err) return console.error(err);
-                res.writeHead(200, {'Content-Type': 'text/html'});
-                res.end(data.toString());
-            });
-            break;
-        case '/detail':
-            var carMod = query.model;
-            // console.log(carMod);
-            var carResult = vehicles.getItem(carMod);
-            // console.log(carResult);
-            var carResString = JSON.stringify(carResult);
-            // console.log(carResString);
-            res.writeHead(200, {'Content-Type': 'text/plain'});
-            res.end(carResString);
-            break;
-        default:
-            res.writeHead(404, {'Content-Type': 'text/plain'});
-            res.end('Not found');
-            break;
-    }
-}).listen(process.env.PORT || 3000);
+
+
+const app = express();
+app.set('port', process.env.PORT || 3000);
+app.use(express.static('./public')); // set location for static files
+app.use(express.urlencoded({ extended: true })); //Parse URL-encoded bodies
+app.use(express.json());
+app.engine('handlebars', exphbs({defaultLayout: "main.handlebars"})); //Set up handlebars
+app.set("view engine", "handlebars");
+
+app.get('/', (req,res) => {
+    res.type('text/html');
+    res.render('home', {vehicles: vehicles.getAll()});
+});
+
+app.get('/about', (req,res) => {
+    res.type('text/html');
+    res.sendFile('/CodeLibrary/Code Projects/Seattle Central/it122/public/about/about.html');
+    //Why does this have to be an absolute path?
+    //I'd assume I could store my root path as a variable somehow so that I don't have to customize it for each machine.
+});
+
+app.get('/detail', (req,res) => {
+    let carResult = vehicles.getItem(req.query.model);
+    res.render("details", { model: req.query.model, carResult });
+});
+
+app.use((req,res) => {
+    res.type('text/plain');
+    res.status(404);
+    res.send('404 - Not found');
+});
+
+
+app.listen(app.get('port'), () => {
+    console.log('Express started');
+});

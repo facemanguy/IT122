@@ -1,0 +1,14 @@
+{{#if carResult}}
+    <h2>{{model}} Details</h2>
+    <ul>
+        <li>Year: {{carResult.year}}</li>
+        <li>Make: {{carResult.make}}</li>
+        <li>Type: {{carResult.type}}</li>
+        <li>Color: {{carResult.color}}</li>
+        <li>Capacity: {{carResult.capacity}}</li>
+        <li>Horsepower: {{carResult.horsepower}}</li>
+    </ul>
+{{else}}
+    <h2>{{model}} not found</h2>
+{{/if}} 
+<a href="/">Return to Home Page</a>

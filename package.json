@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "type":"module",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/facemanguy/IT122.git"
@@ -16,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/facemanguy/IT122/issues"
   },
-  "homepage": "https://github.com/facemanguy/IT122#readme"
+  "homepage": "https://github.com/facemanguy/IT122#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-handlebars": "^5.3.2"
+  }
 }
