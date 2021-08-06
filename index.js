@@ -1,7 +1,8 @@
 'use strict'
 import express from 'express';
 import exphbs from 'express-handlebars';
-import * as vehicles from './data.js';
+//import * as vehicles from './data.js';
+import { Car } from './models/data-model.js';
 
 
 const app = express();
@@ -12,9 +13,15 @@ app.use(express.json());
 app.engine('handlebars', exphbs({defaultLayout: "main.handlebars"})); //Set up handlebars
 app.set("view engine", "handlebars");
 
-app.get('/', (req,res) => {
-    res.type('text/html');
-    res.render('home', {vehicles: vehicles.getAll()});
+app.get('/', (req,res,next) => {
+    Car.find({}).lean()
+        .then((cars) => {
+            console.log(cars);
+            res.render('home', {cars});
+        })
+    .catch(err => next(err));
+    // res.type('text/html');
+    // res.render('home', {vehicles: vehicles.getAll()});
 });
 
 app.get('/about', (req,res) => {
@@ -24,9 +31,16 @@ app.get('/about', (req,res) => {
     //I'd assume I could store my root path as a variable somehow so that I don't have to customize it for each machine.
 });
 
-app.get('/detail', (req,res) => {
-    let carResult = vehicles.getItem(req.query.model);
-    res.render("details", { model: req.query.model, carResult });
+app.get('/detail', (req,res,next) => {
+    Car.findOne({"model": req.query.model}).lean()
+        .then((cars) => {
+            console.log(cars);
+            res.render("details", {cars});
+        })
+    .catch(err => next(err));
+    
+    // let carResult = vehicles.getItem(req.query.model);
+    // res.render("details", { model: req.query.model, carResult });
 });
 
 app.use((req,res) => {
