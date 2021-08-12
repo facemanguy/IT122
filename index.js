@@ -22,7 +22,8 @@ app.get('/', (req,res,next) => {
     Car.find({}).lean()
         .then((cars) => {
             console.log(cars);
-            res.render('home', {cars});
+            //res.render('home', {cars});
+            res.render('home', {cars: JSON.stringify(cars)});
         })
     .catch(err => next(err));
     // res.type('text/html');

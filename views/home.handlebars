@@ -1,4 +1,4 @@
-<h1>Welcome to John Meyer's IT122 Page</h1>
+{{!-- <h1>Welcome to John Meyer's IT122 Page</h1>
 <p>This is just the start</p>
 <p>Check out my <a href="about">about page</a> for more!</p>
 <h3>Here is my list of cars</h3>
@@ -6,4 +6,27 @@
 {{#each cars}}
     <li><a href="/detail?model={{model}}">{{model}}</a></li>
 {{/each}} 
-</ul>
+</ul> --}}
+
+<div id="root"></div>
+<script type="text/babel">
+    const greeting = <h1>Welcome to John Meyer's IT122 React page!</h1>;
+    const infoBlock = (
+        <div>
+            <p>This website utilizes multiple JavaScript technologies.</p>
+            <p>These include Node.JS, Express, Mongoose, Handlebars, and React.</p>
+            <p>An example of all this working together is below, try clicking a car for more details.</p>
+            <h3>Here is my list of Cars:</h3>
+        </div>
+    );
+
+    const carList = {{{cars}}};
+    const carNames = carList.map((car, index) => <li key={index}><a href={"/detail?model=" + car.model}>{car.model}</a></li>);
+
+
+    const App = () => {
+      return <div>{greeting}{infoBlock}<ul>{carNames}</ul></div>;
+    }
+    ReactDOM.render(<App />, document.getElementById('root'));
+
+</script>
