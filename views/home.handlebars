@@ -10,23 +10,92 @@
 
 <div id="root"></div>
 <script type="text/babel">
-    const greeting = <h1>Welcome to John Meyer's IT122 React page!</h1>;
-    const infoBlock = (
-        <div>
-            <p>This website utilizes multiple JavaScript technologies.</p>
-            <p>These include Node.JS, Express, Mongoose, Handlebars, and React.</p>
-            <p>An example of all this working together is below, try clicking a car for more details.</p>
-            <h3>Here is my list of Cars:</h3>
-        </div>
-    );
+    //const Greeting = <h1>Welcome to John Meyer's IT122 React page!</h1>;
+    //const InfoBlock = (
+    //    <div>
+    //        <p>This website utilizes multiple JavaScript technologies.</p>
+    //        <p>These include Node.JS, Express, Mongoose, Handlebars, and React.</p>
+    //        <p>An example of all this working together is below, try clicking a car for more details.</p>
+    //        <h3>Here is my list of Cars:</h3>
+    //   </div>
+    //);
 
     const carList = {{{cars}}};
-    const carNames = carList.map((car, index) => <li key={index}><a href={"/detail?model=" + car.model}>{car.model}</a></li>);
 
+    const VehicleList = (props) => {
+        const listCars = props.carList.map((car) => <li key={car._id} onClick={props.clickHandler}>{car.model}</li>);
+        return <ul>{listCars}</ul>
+    };
 
-    const App = () => {
-      return <div>{greeting}{infoBlock}<ul>{carNames}</ul></div>;
-    }
+    //const carNames = carList.map((car, index) => <li key={index}><a href={"/detail?model=" + car.model}>{car.model}</a></li>); --}}
+    //const App = () => {
+    //  return <div>{greeting}{infoBlock}<ul>{carNames}</ul></div>;
+    //}
+    
+
+    const Detail = (props) => {
+        return <div><h3>Car stats:</h3>
+        <form>
+            Model: <input type="text" name="model" onChange={props.onChange} value={props.car.model || ""}/><br/>
+            Year: <input type="text" name="year" onChange={props.onChange} value={props.car.year || ""}/><br/>
+            Make: <input type="text" name="make" onChange={props.onChange} value={props.car.make || ""}/><br/>
+            Type: <input type="text" name="type" onChange={props.onChange} value={props.car.type || ""}/><br/>
+            Color: <input type="text" name="color" onChange={props.onChange} value={props.car.color || ""}/><br/>
+            Capacity: <input type="text" name="capacity" onChange={props.onChange} value={props.car.capacity || ""}/><br/>
+            Horsepower: <input type="text" name="horsepower" onChange={props.onChange} value={props.car.horsepower || ""}/><br/>
+        </form>
+        <button onClick={props.onClear}>Clear</button> | <button onClick={props.onSave}>Save</button>
+        </div>
+    };
+
+    class App extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {currentItem: {}};
+        }
+
+        showDetail = (e) => {
+            const car = carList.find((car) => car.model == e.target.innerText)
+            this.setState({"currentItem": car})
+        }
+
+        onChange = (e) => {
+            const newCar = this.state.currentItem;
+            newCar[e.target.name] = e.target.value;
+            this.setState({"currentItem": newCar})
+        }
+
+        onClear = (e) => {
+            this.setState({"currentItem": {}})
+        }
+
+        onSave = () => {
+            let car = this.state.currentItem;
+            fetch("/api/add", {
+                method: "POST",
+                headers:  {'Content-Type': 'appplication/json'},
+                body: JSON.stringify(car)
+            })
+            .then(res => res.json())
+            .then((json) => { console.log(json) });
+        }
+
+        render() {
+            return (
+                <div>
+                    <h1>Welcome to John Meyer's IT122 React page!</h1>
+                    <p>This website utilizes multiple JavaScript technologies.</p>
+                    <p>These include Node.JS, Express, Mongoose, Handlebars, and React.</p>
+                    <p>An example of all this working together is below, try clicking a car for more details.</p>
+                    <h3>Here is my list of Cars:</h3>
+                    <VehicleList carList={carList} clickHandler={this.showDetail} />
+                    <hr />
+                    <Detail car={this.state.currentItem} onSave={this.onSave} onChange={this.onChange} onClear={this.onClear}/>
+                </div>
+            );
+        }
+    };
+
     ReactDOM.render(<App />, document.getElementById('root'));
 
 </script>
